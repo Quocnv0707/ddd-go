@@ -1,33 +1,57 @@
 Cấu trúc trong một ứng dụng Go:
 golang_project_structure/
     api/
+     |
     assets/
+     |
     build/
-        ci/
-        package/
+     |________ci/
+     |
+     |________package/
+     |
     cmd/
-        your_app/
-            main.go
+     |_________your_app/
+     |          |
+     |          |_____main.go
+     |
     configs/
+     |
     deployments/
+     |
     docs/
+     |
     examples/
+     |
     githooks/
+     |
     init/
+     |
     internal/
-        app/your_app/
-        pkg/your_private_lib
+     |   
+     |_____app/your_app/
+     |          |
+     |          |_____pkg/your_private_lib
+     |
     pkg/
-        your_package_lib/
+     |
+     |_____your_package_lib/
+     |
     scripts/
+     |
     test/
+     |
     third-party/
+     |
     tools/
+    |
     vendor/
+     |
     web/
-        app/
-        static/
-        template/
+     |_____app/
+     |_____static/
+     |_____template/
+     |
+     |
     website/
 
 Giải thích: 
