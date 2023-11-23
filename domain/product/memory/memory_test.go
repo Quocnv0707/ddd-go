@@ -1,8 +1,7 @@
 package memory
 
 import (
-	"ddd-go/aggregate"
-	"ddd-go/domain/product"
+	"tavern/domain/product"
 	"testing"
 
 	"github.com/google/uuid"
@@ -10,7 +9,7 @@ import (
 
 func TestMemory_AddProduct(t *testing.T) {
 	repo := New()
-	p, err := aggregate.NewProduct("Hala", "HoaKy", 2.5)
+	p, err := product.NewProduct("Hala", "HoaKy", 2.5)
 	if err != nil {
 		t.Error(err)
 	}
@@ -25,7 +24,7 @@ func TestMemory_GetAll(t *testing.T) {
 	repo := New()
 	for i := 0; i < 3; i++ {
 		// name, desc := (string) i
-		p, err := aggregate.NewProduct("Pencil", "Long: 6cm", 6.3)
+		p, err := product.NewProduct("Pencil", "Long: 6cm", 6.3)
 		if err != nil {
 			t.Error(err)
 		}
@@ -39,7 +38,7 @@ func TestMemory_GetAll(t *testing.T) {
 
 func TestMemory_GetProductByID(t *testing.T) {
 	repo := New()
-	p, err := aggregate.NewProduct("Nho", "Hoa ky", 9.9)
+	p, err := product.NewProduct("Nho", "Hoa ky", 9.9)
 	if err != nil {
 		t.Error(err)
 	}
@@ -79,7 +78,7 @@ func TestMemory_GetProductByID(t *testing.T) {
 
 func TestMemory_DeleteProduct(t *testing.T) {
 	repo := New()
-	p, err := aggregate.NewProduct("bread", "made from wheat flour", 4.0)
+	p, err := product.NewProduct("bread", "made from wheat flour", 4.0)
 	if err != nil {
 		t.Error(err)
 	}

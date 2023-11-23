@@ -1,4 +1,4 @@
-package valueoject
+package tavern
 
 import (
 	"time"

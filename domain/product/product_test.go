@@ -1,7 +1,7 @@
-package aggregate_test
+package product_test
 
 import (
-	"ddd-go/aggregate"
+	"tavern/domain/product"
 	"testing"
 )
 
@@ -18,7 +18,7 @@ func TestProduct_NewProduct(t *testing.T) {
 		{
 			test:      "invalid value: empty Name",
 			name:      "",
-			expectErr: aggregate.ErrMissingValue,
+			expectErr: product.ErrMissingValue,
 		},
 		{
 			test:      "valid value",
@@ -31,7 +31,7 @@ func TestProduct_NewProduct(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.test, func(t *testing.T) {
-			_, err := aggregate.NewProduct(tc.name, tc.desc, tc.price)
+			_, err := product.NewProduct(tc.name, tc.desc, tc.price)
 			if err != tc.expectErr {
 				t.Errorf("Expect Error %v, got %v", tc.expectErr, err)
 			}

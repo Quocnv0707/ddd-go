@@ -1,53 +1,52 @@
 package memory
 
 import (
-	"ddd-go/aggregate"
-	"ddd-go/domain/customer"
 	"sync"
+	"tavern/domain/customer"
 
 	"github.com/google/uuid"
 )
 
 type MemoryCustomerRepository struct {
-	cusomers map[uuid.UUID]aggregate.Customer
+	customers map[uuid.UUID]customer.Customer
 	sync.Mutex
 }
 
 func New() *MemoryCustomerRepository {
 	return &MemoryCustomerRepository{
-		cusomers: make(map[uuid.UUID]aggregate.Customer),
+		customers: make(map[uuid.UUID]customer.Customer),
 	}
 }
 
-func (repo *MemoryCustomerRepository) Get(id uuid.UUID) (aggregate.Customer, error) {
-	if customer, ok := repo.cusomers[id]; ok {
+func (repo *MemoryCustomerRepository) Get(id uuid.UUID) (customer.Customer, error) {
+	if customer, ok := repo.customers[id]; ok {
 		return customer, nil
 	}
-	return aggregate.Customer{}, customer.ErrCustomerNotFound
+	return customer.Customer{}, customer.ErrCustomerNotFound
 }
 
-func (repo *MemoryCustomerRepository) Add(cus aggregate.Customer) error {
+func (repo *MemoryCustomerRepository) Add(cus customer.Customer) error {
 	//kiểm tra repo được tạo hay chưa
-	if repo.cusomers == nil {
+	if repo.customers == nil {
 		repo.Lock()
-		repo.cusomers = make(map[uuid.UUID]aggregate.Customer)
+		repo.customers = make(map[uuid.UUID]customer.Customer)
 		repo.Unlock()
 	}
-	if _, ok := repo.cusomers[cus.GetID()]; ok {
+	if _, ok := repo.customers[cus.GetID()]; ok {
 		return customer.ErrFailedToAddCustomer
 	}
 	repo.Lock()
-	repo.cusomers[cus.GetID()] = cus
+	repo.customers[cus.GetID()] = cus
 	repo.Unlock()
 	return nil
 }
 
-func (repo *MemoryCustomerRepository) Update(cus aggregate.Customer) error {
-	if _, ok := repo.cusomers[cus.GetID()]; !ok {
+func (repo *MemoryCustomerRepository) Update(cus customer.Customer) error {
+	if _, ok := repo.customers[cus.GetID()]; !ok {
 		return customer.ErrFaildToUpdateCustomer
 	}
 	repo.Lock()
-	repo.cusomers[cus.GetID()] = cus
+	repo.customers[cus.GetID()] = cus
 	repo.Unlock()
 	return nil
 }

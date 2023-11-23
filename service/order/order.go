@@ -1,15 +1,14 @@
-package service
+package order
 
 import (
 	"context"
-	"ddd-go/aggregate"
-	"ddd-go/domain/customer"
-	"ddd-go/domain/customer/memory"
-	"ddd-go/domain/product"
-	proMemory "ddd-go/domain/product/memory"
 	"log"
+	"tavern/domain/customer"
+	"tavern/domain/customer/memory"
+	"tavern/domain/product"
+	proMemory "tavern/domain/product/memory"
 
-	"ddd-go/domain/customer/mongo"
+	"tavern/domain/customer/mongo"
 
 	"github.com/google/uuid"
 )
@@ -46,7 +45,7 @@ func WithMemoryCustomerRepository() OrderConfiguration {
 
 func WithMongoCustomerRepository(connectionString string) OrderConfiguration {
 	return func(os *OrderService) error {
-		cr, err := mongo.New(context.Background(), connectionString)
+		cr, err := mongo.NewMongoCustomerRepository(context.Background(), connectionString)
 		if err != nil {
 			return err
 		}
@@ -55,7 +54,7 @@ func WithMongoCustomerRepository(connectionString string) OrderConfiguration {
 	}
 }
 
-func WithMemoryProductRepository(products []aggregate.Product) OrderConfiguration {
+func WithMemoryProductRepository(products []product.Product) OrderConfiguration {
 	return func(os *OrderService) error {
 		proRepo := proMemory.New()
 		for _, item := range products {
@@ -74,7 +73,7 @@ func (os *OrderService) CreateOrder(customerID uuid.UUID, productsID []uuid.UUID
 	if err != nil {
 		return 0, err
 	}
-	var products []aggregate.Product
+	var products []product.Product
 	var price float64
 	for _, id := range productsID {
 		p, err := os.prpducts.GetById(id)
@@ -86,4 +85,18 @@ func (os *OrderService) CreateOrder(customerID uuid.UUID, productsID []uuid.UUID
 	}
 	log.Printf("Customer: has ID: %s has %d products[%v]", cus.GetID(), len(products), products)
 	return price, nil
+}
+
+func (o *OrderService) AddCustomer(name string) (uuid.UUID, error) {
+	c, err := customer.NewCustomer(name)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	// Add to Repo
+	err = o.customers.Add(c)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return c.GetID(), nil
 }

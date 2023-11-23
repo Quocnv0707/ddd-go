@@ -1,8 +1,7 @@
 package memory
 
 import (
-	"ddd-go/aggregate"
-	"ddd-go/domain/customer"
+	"tavern/domain/customer"
 	"testing"
 
 	"github.com/google/uuid"
@@ -15,7 +14,7 @@ func TestMemory_GetMemory(t *testing.T) {
 		id        uuid.UUID
 	}
 
-	cus, err := aggregate.NewCustomer("QuocNV")
+	cus, err := customer.NewCustomer("QuocNV")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +22,7 @@ func TestMemory_GetMemory(t *testing.T) {
 	id := cus.GetID()
 	//tạo một repository
 	repo := MemoryCustomerRepository{
-		cusomers: map[uuid.UUID]aggregate.Customer{
+		customers: map[uuid.UUID]customer.Customer{
 			id: cus,
 		},
 	}
@@ -69,9 +68,9 @@ func TestMemory_AddCustomer(t *testing.T) {
 	for _, i := range testcases {
 		t.Run(i.name, func(t *testing.T) {
 			repo := MemoryCustomerRepository{
-				cusomers: make(map[uuid.UUID]aggregate.Customer),
+				customers: make(map[uuid.UUID]customer.Customer),
 			}
-			cust, err := aggregate.NewCustomer(i.cus)
+			cust, err := customer.NewCustomer(i.cus)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -98,13 +97,13 @@ func TestMemory_UpdateCustomer(t *testing.T) {
 		id        uuid.UUID
 		expectErr error
 	}
-	cus, err := aggregate.NewCustomer("QuocNV")
+	cus, err := customer.NewCustomer("QuocNV")
 	if err != nil {
 		t.Fatal(err)
 	}
 	id := cus.GetID()
 	repo := MemoryCustomerRepository{
-		cusomers: map[uuid.UUID]aggregate.Customer{
+		customers: map[uuid.UUID]customer.Customer{
 			id: cus,
 		},
 	}
@@ -119,7 +118,7 @@ func TestMemory_UpdateCustomer(t *testing.T) {
 
 	for _, i := range testcases {
 		t.Run(i.name, func(t *testing.T) {
-			cust, err := aggregate.NewCustomer(i.cus)
+			cust, err := customer.NewCustomer(i.cus)
 			if err != nil {
 				t.Fatal(err)
 			}

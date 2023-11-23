@@ -1,4 +1,4 @@
-module ddd-go
+module tavern
 
 go 1.21.3
 

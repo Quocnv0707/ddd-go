@@ -2,7 +2,7 @@ package mongo
 
 import (
 	"context"
-	"ddd-go/aggregate"
+	"tavern/domain/customer"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,26 +16,26 @@ type MongoCustomerRepository struct {
 	customer *mongo.Collection
 }
 type mongoCustomer struct {
-	ID   uuid.UUID `bson: "id"`
-	Name string    `bson: "name"`
+	ID   uuid.UUID `bson:"id"`
+	Name string    `bson:"name"`
 }
 
-func NewFromCustomer(cus aggregate.Customer) mongoCustomer {
+func NewFromCustomer(cus customer.Customer) mongoCustomer {
 	return mongoCustomer{
 		ID:   cus.GetID(),
 		Name: cus.GetName(),
 	}
 }
 
-func (m *mongoCustomer) ToAggregate() aggregate.Customer {
-	cus := aggregate.Customer{}
+func (m *mongoCustomer) ToAggregate() customer.Customer {
+	cus := customer.Customer{}
 	cus.SetID(m.ID)
 	cus.SetName(m.Name)
 	return cus
 }
 
 // Create a new mongodb repository
-func New(ctx context.Context, connectionString string) (*MongoCustomerRepository, error) {
+func NewMongoCustomerRepository(ctx context.Context, connectionString string) (*MongoCustomerRepository, error) {
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func New(ctx context.Context, connectionString string) (*MongoCustomerRepository
 	}, nil
 }
 
-func (mongoRepo *MongoCustomerRepository) Get(id uuid.UUID) (aggregate.Customer, error) {
+func (mongoRepo *MongoCustomerRepository) Get(id uuid.UUID) (customer.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -57,15 +57,16 @@ func (mongoRepo *MongoCustomerRepository) Get(id uuid.UUID) (aggregate.Customer,
 	var c mongoCustomer
 	err := result.Decode(&c)
 	if err != nil {
-		return aggregate.Customer{}, err
+		return customer.Customer{}, err
 	}
 	return c.ToAggregate(), nil
 
 }
 
-func (mongoRepo *MongoCustomerRepository) Add(cus aggregate.Customer) error {
+func (mongoRepo *MongoCustomerRepository) Add(cus customer.Customer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 
 	internal := NewFromCustomer(cus)
 	_, err := mongoRepo.customer.InsertOne(ctx, internal)
@@ -75,6 +76,6 @@ func (mongoRepo *MongoCustomerRepository) Add(cus aggregate.Customer) error {
 	return nil
 }
 
-func (mongoRepo *MongoCustomerRepository) Update(cus aggregate.Customer) error {
+func (mongoRepo *MongoCustomerRepository) Update(cus customer.Customer) error {
 	panic("to implement")
 }

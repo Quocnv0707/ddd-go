@@ -1,9 +1,8 @@
-package aggregate
+package customer
 
 import (
-	"ddd-go/entity"
-	"ddd-go/valueoject"
 	"errors"
+	"tavern"
 
 	"github.com/google/uuid"
 )
@@ -13,25 +12,25 @@ var (
 )
 
 type Customer struct {
-	person   *entity.Person
-	products []*entity.Item
+	person   *tavern.Person
+	products []*tavern.Item
 
-	transactions []*valueoject.Transaction
+	transactions []*tavern.Transaction
 }
 
 func NewCustomer(name string) (Customer, error) {
 	if name == "" {
 		return Customer{}, ErrInvalidPerson
 	}
-	person := &entity.Person{
+	person := &tavern.Person{
 		ID:   uuid.New(),
 		Name: name,
 	}
 
 	return Customer{
 		person:       person,
-		products:     make([]*entity.Item, 0),
-		transactions: make([]*valueoject.Transaction, 0),
+		products:     make([]*tavern.Item, 0),
+		transactions: make([]*tavern.Transaction, 0),
 	}, nil
 }
 
@@ -41,7 +40,7 @@ func (cus *Customer) GetID() uuid.UUID {
 
 func (cus *Customer) SetID(id uuid.UUID) {
 	if cus.person == nil {
-		cus.person = &entity.Person{}
+		cus.person = &tavern.Person{}
 	}
 	cus.person.ID = id
 }
@@ -52,7 +51,7 @@ func (cus *Customer) GetName() string {
 
 func (cus *Customer) SetName(name string) {
 	if cus.person == nil {
-		cus.person = &entity.Person{}
+		cus.person = &tavern.Person{}
 	}
 	cus.person.Name = name
 }
